@@ -1,13 +1,12 @@
 \documentclass[submit]{harvardml}
 
 % Put in your full name and email address.
-\name{Your Name}
-\email{email@fas.harvard.edu}
+\name{Ben Cook}
+\email{bcook@cfa.harvard.edu}
 
 % List any people you worked with.
 \collaborators{%
-  John Doe,
-  Fred Doe
+  Roxana Pop
 }
 
 
@@ -41,6 +40,8 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\cov}{\text{cov}}
 \renewcommand{\v}[1]{\mathbf{#1}}
+\newcommand{\XXT}{\ensuremath{\v X \v X^T}}
+\newcommand{\XTX}{\ensuremath{\v X^T \v X}}
 
 \begin{document}
 \begin{center}
@@ -85,6 +86,52 @@ covariance is zero.
 \end{enumerate}
 \end{problem}
 
+\section*{Variance and Covariance -- Solution}
+\begin{enumerate}[label=(\alph*)]
+\item The covariance is defined to be:
+  \begin{align*}
+    \cov(X,Y) &\equiv \E(XY) - \E(X)\E(Y)\\ \intertext{If $X$ and $Y$
+      are independent, then $p(x,y) = p(x)p(y)$, and the expectation
+      of them can be separated:} \E(XY) &\equiv \int\int x y p(x,y) dx
+    dy = \int\int x y p(x) p(y) dx dy\\
+    &= \int xp(x)dx \int yp(y) dx\\
+    &= \E(X)\E(Y)\\
+  \end{align*}
+  Therefore, the covariance is necessarily zero.
+  
+\item
+  As one example, let us take $X\sim\mathcal{N}(0,1)$, and
+  $Y=X^2$. $X$ and $Y$ are clearly highly dependent, but we can
+  calculate their covariance:
+  \begin{align*}
+    \cov(X,Y) &\equiv \E(XY) - \E(X)\E(Y)\\
+    &= \E(X^3) - \E(X)\E(X^2)\\
+    \intertext{From the fact that $p(x)$ is symmetric about zero, we
+      can see that $\E(X)$ and $\E(X^3)$ are both
+      zero. Therefore, without even needing to calculate $\E(X^2)$ we
+      can find:}
+    \Aboxed{\cov(X,Y) &= 0 - 0\E(X^2) = 0}
+  \end{align*}
+  Therefore, we have found two random variables which are not
+  independent but do have zero covariance.
+  
+\item
+  \begin{align*}
+    \E(X + aY) &\equiv \int\int (x+ay) p(x)p(y) dx dy\\
+    &= \left(\int x p(x) dx\right) +a\left(\int y p(y) dy\right)\\
+    \therefore \Aboxed{\E(X+aY)&= \E(X) + a \E(Y)}\\
+    \var(X + aY) &\equiv \E\left[(X + aY)^2\right] - \E\left[X +
+      aY\right]^2\\
+    &= \E\left[X^2 + a^2Y^2 + 2aXY\right] - \E\left[X + aY\right]^2\\
+    \intertext{From the independence of $X$ and $Y$ and linearity of
+      expectation:}
+    &= \E(X^2) + a^2\E(Y^2) + 2a\E(X)\E(Y) - \E(X)^2 - a^2\E(Y)^2 -
+    2a\E(X)\E(Y)\\
+    &= \E(X^2)-\E(X)^2 + a^2\left[\E(Y^2) - \E(Y)^2\right]\\
+    \therefore \Aboxed{\var(X + aY) &= \var(X) + a^2\var(Y)}
+  \end{align*}
+\end{enumerate}
+
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,6 +149,51 @@ Answer the following questions:
   \item Explain the discrepancy.
 \end{enumerate}
 \end{problem}
+
+\section*{Densities -- Solutions}
+\begin{enumerate}[label=(\alph*)]
+  \item Yes, the only relevant restriction on a pdf is that it
+    \textit{integrates to one} and is never negative. Therefore, the
+    pdf can take on values greater than 1, but just not over very
+    large portions of its domain. For example:
+    \begin{align*}
+      p(x) &= \begin{cases}
+        10 \,, & 0 \leq x < 0.1\\
+        0\,, & \mathrm{else}
+      \end{cases}
+    \end{align*}
+    is a perfectly valid, normalized pdf which takes on values greater
+    than 1.
+  \item
+    The pdf of a univariate normal distribution is:
+    \begin{align*}
+      p(x|\mu,\sigma^2) &= \frac{1}{\sqrt{2\pi\sigma^2}}
+      \exp\left[-\frac{(x-\mu)^2}{2\sigma^2}\right]\\
+      \intertext{Plugging in the values provided:}
+      p\left(x | \mu=0, \sigma^2=0.01\right) &= \frac{10}{\sqrt{2\pi}}\exp\left[-50x^2\right], 
+    \end{align*}
+    defined for all real values of $x$.
+  \item
+    \begin{align*}
+      p\left(x=0 | \mu=0, \sigma^2=0.01\right) &=
+      \frac{10}{\sqrt{2\pi}}\\
+      &\approx 3.99
+    \end{align*}
+  \item
+    The probability that $X$ is exactly equal to $0$ is zero:
+    \begin{align*}
+      P(X = 0) &= \lim_{\epsilon \rightarrow 0}
+      \int_{-\epsilon}^{\epsilon} p(x^\prime) dx^\prime = 0
+    \end{align*}
+  \item
+    While the pdf represents the probability \textit{mass} ($p(x)$) at a
+    particular point of its domain, this mass must be integrated over
+    a particular segment of the domain ($dx$) to compute the
+    probability of the random variable $X$ lying in that segment of
+    the domain. There is zero probability that a \textit{continuous}
+    variable will ever be \textit{exactly} equal to zero, or any
+    specific number for that matter.
+\end{enumerate}
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% PROBLEM 3 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,6 +227,58 @@ Hints:
 
 \end{problem}
 
+\section*{Conditioning and Bayes' rule -- Solutions}
+\begin{enumerate}
+\item
+We can compute the unconditional (a.k.a.~marginal)
+  probability by marginalizing over $X$:
+  \begin{align*}
+    p(y) &= \int p(y|x) p(x) dx =
+    \int\mcN(y|x,\bSigma^\prime)\mcN(x|\mu,\bSigma)dx\\ &=
+    \int\mcN(y-x|0,\bSigma^\prime)\mcN(x|\mu,\bSigma)dx\\ \intertext{This
+      is simply the convolution of two multivariate normals, with
+      means $0$ and $\mu$ and covariances $\bSigma^\prime$ and
+      $\bSigma$. The result is also a multivariate normal. We can
+      compute the mean and covariance using Adam's law and the law of
+      total covariance:} \E(Y) &=
+    \E(\E(Y|X))\;(\mathrm{Adam's\,Law})\\ \E(Y|X) &= X\\ \therefore
+    \E(Y) &= \E(X) = \mu.\\ \cov(Y) &= \E(\cov(Y|X)) +
+    \cov(\E(Y|X))\;(\mathrm{LOTC})\\ &= \E(\bSigma^\prime) +
+    \cov(X)\\ &= \bSigma^\prime + \bSigma\\
+    p(y) &= \mcN(y|\mu,
+    \bSigma+\bSigma^\prime)\\ \Aboxed{Y &\sim \mcN(\mu,
+      \bSigma+\bSigma^\prime)}
+  \end{align*}
+
+\item
+  The joint distribution of $(X,Y)$ is also multivariate normal, as
+  proved in \S2.3.3 of Bishop. Given that
+  $Y\sim\mcN(X,\bSigma+\bSigma^\prime)$, and knowing that the sum of
+  two multivariate normals is also a MVN with the means and
+  covariances summed, we can use the transform $Y = X + Z$, with
+  $Z=\mcN(0,\bSigma^\prime)$. Therefore, we can find the joint distribution:
+  \begin{align*}
+    (X,Y) &= (X, X+Z)\\
+    &\sim \mcN\left(\begin{bmatrix}\E(X)\\\E(X+Z)
+    \end{bmatrix}, \begin{bmatrix}\var(X)&\cov(X,X+Z)\\
+      \cov(X,X+Z)&\var(X+Z)
+    \end{bmatrix}\right)\\
+    \intertext{We know $\E(X) = \E(X+Z) = \mu$, $\var(X) = \bSigma$,
+      $\var(X+Z) = \bSigma + \bSigma^\prime$. Finally, we use
+      linearity of covariance:}
+    \cov(X,X+Z) &= \cov(X,X) + \cov(X,Z)\\
+    \intertext{Since $X$ and $Z$ are independent random variables,
+      $\cov(X,Z) = 0$, and $\cov(X,X) \equiv \var(X)$:}
+    \cov(X,X+Z) &= \var(X) = \bSigma\\
+   (X,Y) &\sim \mcN\left(\begin{bmatrix}\mu\\\mu
+    \end{bmatrix}, \begin{bmatrix}\bSigma&\bSigma\\
+      \bSigma&\bSigma+\bSigma^\prime \end{bmatrix}\right)
+  \end{align*}
+\end{enumerate}
+
+We confirm that these results are the same as those shown in \S2.3.3
+of Bishop, where $\boldA=\mcI$ and $\boldb = \mathbf{0}$.
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% PROBLEM 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,6 +303,48 @@ Hints:
 	\end{itemize}
 \end{problem}
 
+\section*{I can Ei-gen -- solutions}
+\begin{enumerate}[label=(\alph*)]
+\item
+  The non-zero eigenvalues of $\XTX$ and $\XXT$ are the
+  same. 
+
+  \textit{Proof:} Take $\boldv$ to be an eigenvector of \XXT{} with
+  eigenvalue $\lambda$. Then,
+  \begin{align*}
+    \XXT \boldv &= \lambda \boldv\\
+    \v X^T \XXT \boldv &= \XTX(\v X^T \boldv) = \lambda(\v X^T
+    \boldv)\\
+    \therefore \XTX \boldu = \lambda \boldu\\
+    \intertext{for $\boldu = \v X^T \boldv$. Therefore, any non-zero eigenvalue
+    of $\XXT$ (for eigenvector $\boldv$) is also an eigenvalue of
+    $\XTX$ (for eigenvector $\v X^T \boldv$).}
+  \end{align*}
+\item
+  From the spectral theorem, the eigenvalues of a symmetric matrix $\v X$ must be
+  real. The eigenvalues of $\v X + \v I$ are each one greater than the
+  eigenvalues of $\v X$.
+
+  \textit{Proof:} Take an eigenvector $\boldv$ of $\v X$ with
+  eigenvalue $\lambda$:
+  \begin{align*}
+    \v X \boldv &= \lambda \boldv\\
+    (\v X + \v I)\boldv &= \v X \boldv + \v I \boldv \\
+    &=(\lambda+1)\boldv\\ 
+  \end{align*}
+\item
+  The eigenvalues of $\v X^{-1}$ are equal to the reciprocals of the
+  eigenvalues of $\v X$.
+
+  \textit{Proof:} Take $\boldv$ to be an eigenvector of $\v X$ with
+  eigenvalue $\lambda$, and consider $\v X^{-1} \boldv$:
+  \begin{align*}
+    \lambda \v X^{-1} \boldv &= \v X^{-1}(\lambda \boldv)\\
+    &= \v X^{-1} (\v X \boldv)\\
+    &= \boldv\\
+    \therefore \v X^{-1} \boldv &= \frac{1}{\lambda} \boldv
+  \end{align*}
+\end{enumerate}
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,9 +362,49 @@ Hints:
 \end{enumerate}
 \end{problem}
 
+\section*{Vector Calculus -- Solutions}
+
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{align*}
+    \boldx^T \boldy &\equiv \sum_i x_i y_i\\
+    \frac{d}{d\boldx} c &\equiv
+    \begin{bmatrix}
+      \frac{d}{dx_0} c\\
+      \frac{d}{dx_1} c\\
+      \vdots
+    \end{bmatrix}\\
+    \frac{d}{d\boldx} \boldx^T\boldy &=
+    \begin{bmatrix}\frac{d}{dx_0}  \sum_i x_i y_i \\ \frac{d}{dx_1}
+      \sum_i x_i y_i \\ \vdots\end{bmatrix} = \begin{bmatrix}y_0\\y_1\\\vdots\end{bmatrix}\\
+    \Aboxed{\frac{d}{d\boldx} \boldx^T\boldy &=\boldy}
+  \end{align*}
+\item
+  \begin{align*}
+    \boldx^T \boldx &\equiv \sum_i x_i^2\\
+    \frac{d}{d\boldx} \boldx^T\boldx &=
+    \begin{bmatrix}\frac{d}{dx_0}  \sum_i x_i^2 \\ \frac{d}{dx_1}
+      \sum_i x_i^2 \\ \vdots\end{bmatrix} = \begin{bmatrix}2x_0\\2x_1\\\vdots\end{bmatrix}\\
+        \Aboxed{\frac{d}{d\boldx} \boldx^T\boldx &= 2\boldx}
+  \end{align*}
+\item
+  \begin{align*}
+    (\boldA\boldx)_i &= \sum_jA_{ij} x_j\\
+    \boldx^T\boldA\boldx &= \sum_i x_i(\boldA\boldx)_i =
+    \sum_i\sum_j x_iA_{ij}x_j\\
+    \left(\frac{d}{d\boldx}\boldx^T\boldA\boldx\right)_0 &=
+    \frac{d}{dx_0}\sum_i\sum_j x_iA_{ij}x_j\\
+    &= \sum_j \frac{d}{dx_0} (x_0A_{0j}x_j) + \sum_i
+    \frac{d}{dx_0}(x_jA_{i0}x_0)\\
+    &= \sum_j A_{0j}x_j + \sum_i A_{i0}x_i = (\boldA\boldx +
+    \boldA^T\boldx)_0\\
+    \Aboxed{\frac{d}{d\boldx} \boldx^T\boldA\boldx &= (\boldA+\boldA^T)\boldx}
+  \end{align*}
+\end{enumerate}
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%% PROBLEM 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% PROBLEM 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Gradient Check}
 \begin{problem}
@@ -223,4 +449,60 @@ result.\\
 \end{enumerate}
 \end{problem}
 
+\section*{Gradient Check -- Solutions}
+\begin{enumerate}
+\item
+  My code for the first function:
+  \begin{lstlisting}[language=Python]
+    import numpy as np
+    def f(x):
+        return np.cos(x) + np.power(x, 2.) + np.exp(x)
+  \end{lstlisting}
+\item
+  My code for the second function:
+  \begin{lstlisting}[language=Python]
+    def grad_f(x):
+        return -np.sin(x) + 2.*x + np.exp(x)
+    \end{lstlisting}
+\item
+  My code for the third function:
+  \begin{lstlisting}[language=Python]
+    def grad_check(x, epsilon):
+        num = f(x+epsilon) - f(x-epsilon)
+        den = 2*epsilon
+        return num / den
+  \end{lstlisting}
+
+  My code for evaluating the comparisons and creating the plot:
+  \begin{lstlisting}[language=Python]
+    import matplotlib.pyplot as plt, seaborn.apionly as sns
+    import matplotlib as mpl 
+    def delta_grad(x, epsilon):
+        grad1 = grad_f(x)
+        grad2 = grad_check(x, epsilon)
+        return np.abs(grad1-grad2)
+
+    xs = np.linspace(-10, 10, 15)
+    epsilons = np.logspace(-4, 0, 100)
+    results = {}
+    for x in xs:
+        results[x] = delta_grad(x, epsilons)
+    sns.set_palette(sns.color_palette(``BrBG'', len(xs)))
+    for k in sorted(results.keys()):
+        plt.plot(epsilons, results[k], label='x=%.1f'%k)
+    plt.legend(loc=0, ncol=3)
+    plt.xscale('log'), plt.yscale('log')
+    plt.xlabel(r'$\epsilon$')
+    plt.ylabel(r'$\left|f^\prime_{an}(x)-f^\prime_{num}(x)\right|$')
+    plt.savefig('grad_check.pdf')
+  \end{lstlisting}
+
+  \begin{figure*}
+    \plotonebig{grad_check}
+    \caption{Plot for problem 6 -- The magnitude of the disagreement
+      between the analytical ($f^\prime_{an}(x)$) and numerical
+      ($f^\prime_{num}(x)$) gradients are plotted against $\epsilon$
+      for a variety of $x$. These results show that as $\epsilon$ decreases the two results converge.}
+  \end{figure*}
+\end{enumerate}
 \end{document}

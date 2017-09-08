@@ -172,3 +172,14 @@
 \algtext*{EndFor}% Remove "end while" text
 \algtext*{EndIf}% Remove "end if" text
 \algtext*{EndProcedure}% Remove "end while" text
+
+\newcommand\plottwowide[2]{\centering \leavevmode
+\includegraphics[width=.45\linewidth]{#1} \hfil
+\includegraphics[width=.45\linewidth]{#2}}
+
+\newcommand\plotoneman[2]{\centering \leavevmode
+\includegraphics[width=#2\linewidth]{#1}}
+
+\newcommand\plotonebig[1]{\centering \leavevmode
+  \includegraphics[width=0.97\linewidth]{#1}}
+
